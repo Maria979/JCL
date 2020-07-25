@@ -1,0 +1,107 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+{\fonttbl\f0\fnil\fcharset0 Tahoma;}
+{\colortbl;\red255\green255\blue255;}
+\margl1440\margr1440\vieww19600\viewh13200\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\b\fs36 \cf0 ****** ***************************** Top of Data ******************************\
+==MSG> -CAUTION- Profile changed to CAPS OFF (from CAPS ON) because data\
+==MSG>           contains lower case characters.\
+==MSG> -Warning- The UNDO command is not available until you change\
+==MSG>           your edit profile using the command RECOVERY ON.\
+000001 //*---------------------------------------------------------\
+000002 //DELETE  EXEC PGM=IDCAMS\
+000003 //SYSPRINT DD SYSOUT=*\
+000004 //SYSIN    DD *,SYMBOLS=CNVTSYS\
+000005   DELETE &SYSUID..CH13.VSAM\
+000006   DELETE &SYSUID..CH13.SEQ\
+000007   DELETE &SYSUID..CH13.PDS\
+000008   DELETE &SYSUID..CH13.PDSE\
+000009   SET MAXCC=0\
+000010 //*---------------------------------------------------------\
+000011 //DEFVSAM EXEC PGM=IDCAMS\
+000012 //SYSPRINT DD SYSOUT=*\
+000013 //SYSIN    DD *,SYMBOLS=CNVTSYS\
+000014   DEFINE CLUSTER ( NAME (&SYSUID..CH13.VSAM ) -\
+000015         VOLUME(VPWRKB) TRACKS(1) RECORDSIZE(80,80) -\
+000016         INDEXED KEY(1 0) -\
+000017         CONTROLINTERVALSIZE(80) )\
+000018 //*---------------------------------------------------------\
+000019 //ALLOCATE EXEC PGM=IEFBR14\
+000020 //*---------------------------------------------------------\
+000021 //SEQ      DD DISP=(NEW,CATLG,DELETE),\
+000022 // SPACE=(TRK,1),UNIT=SYSDA,\
+000023 // DCB=(LRECL=80,DSORG=PS),\
+000024 // DSN=&SYSUID..CH13.SEQ\
+000025 //*---------------------------------------------------------\
+000026 //PDS      DD DISP=(NEW,CATLG,DELETE),\
+000027 // SPACE=(TRK,(1,,5)),UNIT=SYSDA,\
+000028 // DCB=(LRECL=80,DSORG=PO),\
+000029 // DSN=&SYSUID..CH13.PDS\
+000030 //*---------------------------------------------------------\
+000031 //PDSE     DD DISP=(NEW,CATLG,DELETE),\
+000032 // SPACE=(TRK,1),UNIT=SYSDA,\
+000033 // DCB=(LRECL=80,DSORG=PO),DSNTYPE=LIBRARY,\
+000034 // DSN=&SYSUID..CH13.PDSE\
+000035 //*---------------------------------------------------------\
+000036 //C1      EXEC PGM=IEBGENER\
+000037 //SYSPRINT DD SYSOUT=*\
+000038 //SYSUT2   DD DSN=&SYSUID..CH13.SEQ,DISP=SHR\
+000039 //SYSUT1   DD *\
+000040 ABCDEFGHIJKLMNOPQRSTUVWXYZ\
+000041 //SYSIN    DD DUMMY\
+000042 //*---------------------------------------------------------\
+000043 //C2      EXEC PGM=IEBGENER\
+000044 //SYSPRINT DD SYSOUT=*\
+000045 //SYSUT2   DD DSN=&SYSUID..CH13.PDS(CH13),DISP=SHR\
+000046 //SYSUT1   DD DSN=&SYSUID..CH13.SEQ,DISP=SHR\
+000047 //SYSIN    DD DUMMY\
+000048 //*---------------------------------------------------------\
+000049 //C3      EXEC PGM=IEBGENER\
+000050 //SYSPRINT DD SYSOUT=*\
+000051 //SYSUT2   DD PATH='/z/z56780/ch13',\
+000052 // PATHOPTS=(OWRONLY,OCREAT,OTRUNC),\
+000053 // PATHMODE=SIRWXU\
+000054 //SYSUT1   DD DSN=&SYSUID..CH13.SEQ,DISP=SHR\
+000055 //SYSIN    DD DUMMY\
+000056 //*---------------------------------------------------------\
+000057 //C4      EXEC PGM=IEBCOPY\
+000058 //SYSPRINT DD SYSOUT=*\
+000059 //PDS      DD DSN=&SYSUID..CH13.PDS,DISP=SHR\
+000060 //PDSE     DD DSN=&SYSUID..CH13.PDSE,DISP=SHR\
+000061 //SYSIN    DD *\
+000062 COPYOPER  COPY OUTDD=PDSE,INDD=PDS\
+000063   SELECT MEMBER=CH13\
+000064 //*---------------------------------------------------------\
+000065 //C5      EXEC PGM=IDCAMS\
+000066 //SYSPRINT DD SYSOUT=*\
+000067 //VSAM     DD DSN=&SYSUID..CH13.VSAM,DISP=SHR\
+000068 //INREC    DD DSN=&SYSUID..CH13.SEQ,DISP=SHR\
+000069 //SYSIN    DD *,SYMBOLS=CNVTSYS\
+000070   REPRO INFILE(INREC) OUTFILE(VSAM)\
+000071 //*---------------------------------------------------------\
+000072 //  IF (C1.RC=0 & C2.RC=0 & C3.RC=0 & C4.RC=0 & C5.RC=0) THEN\
+000073 //LISTC   EXEC PGM=IKJEFT01\
+000074 //SYSPRINT DD SYSOUT=*\
+000075 //SYSTSPRT DD DSN=&SYSUID..P2.OUTPUT(#13),DISP=SHR\
+000076 //SYSTSIN  DD *,SYMBOLS=CNVTSYS\
+000077   LISTC LEVEL(&SYSUID)\
+000078 //  ENDIF\
+000079 //*---------------------------------------------------------\
+000080 //D1      EXEC PGM=IDCAMS\
+000081 //SYSPRINT DD SYSOUT=*\
+000082 //SYSIN    DD *,SYMBOLS=CNVTSYS\
+000083   DELETE &SYSUID..CH13.VSAM\
+000084   DELETE &SYSUID..CH13.SEQ\
+000085   DELETE &SYSUID..CH13.PDS\
+000086   DELETE &SYSUID..CH13.PDSE\
+000087   SET MAXCC=0\
+000088 //*---------------------------------------------------------\
+000089 //D2       EXEC PGM=BPXBATCH\
+000090 //STDOUT   DD SYSOUT=*\
+000091 //STDERR   DD SYSOUT=*\
+000092 //STDPARM  DD *\
+000093 sh ls -al  ;\
+000094 rm -r * ;\
+****** **************************** Bottom of Data ****************************\
+}

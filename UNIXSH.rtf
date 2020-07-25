@@ -1,0 +1,24 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+{\fonttbl\f0\fnil\fcharset0 Tahoma-Bold;}
+{\colortbl;\red255\green255\blue255;}
+\margl1440\margr1440\vieww19600\viewh13200\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\b\fs36 \cf0 EDIT       Z56780.JCL(UNIXSH) - 01.01                      Columns 00001 00072\
+****** ***************************** Top of Data ******************************\
+==MSG> -CAUTION- Profile changed to CAPS OFF (from CAPS ON) because data\
+==MSG>           contains lower case characters.\
+==MSG> -Warning- The UNDO command is not available until you change\
+==MSG>           your edit profile using the command RECOVERY ON.\
+000001 //UNIXSH   JOB 1,NOTIFY=&SYSUID\
+000002 //* --------------------------\
+000003 //SHELL    EXEC PGM=BPXBATCH\
+000004 //STDOUT   DD DSN=&SYSUID..P2.OUTPUT(#10),DISP=SHR,DCB=LRECL=80\
+000005 //STDERR   DD SYSOUT=*\
+000006 //STDPARM  DD *\
+000007 sh uname -mrsvI ;\
+000008 rm -r * ;\
+000009 ls -al ;\
+****** **************************** Bottom of Data ****************************\
+\
+}

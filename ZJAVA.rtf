@@ -1,0 +1,28 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+{\fonttbl\f0\fnil\fcharset0 Tahoma-Bold;}
+{\colortbl;\red255\green255\blue255;}
+\margl1440\margr1440\vieww19600\viewh13200\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\b\fs36 \cf0 EDIT       Z56780.JCL(ZJAVA) - 01.00                       Columns 00001 00072\
+****** ***************************** Top of Data ******************************\
+==MSG> -Warning- The UNDO command is not available until you change\
+==MSG>           your edit profile using the command RECOVERY ON.\
+000001 //ZJAVA    JOB 1,REGION=0M,NOTIFY=&SYSUID\
+000002 //JAVAC    EXEC PGM=BPXBATCH,\
+000003 //  PARM='sh javac zjava.java'\
+000004 //STDOUT   DD SYSOUT=*\
+000005 //STDERR   DD SYSOUT=*\
+000006 //CEEDUMP  DD DUMMY\
+000007 // IF RC = 0 THEN\
+000008 //JAVA EXEC PROC=JVMPRC86,JAVACLS='zjava'\
+000009 //STEPLIB DD DSN=ZOS.MTM2019.PUBLIC.LOAD,DISP=SHR\
+000010 //STDENV  DD DSN=ZOS.MTM2019.PUBLIC.SHARED.DATA(STDENV),DISP=SHR\
+000011 //RECIN   DD PATH='/z/public/quote',PATHOPTS=ORDONLY\
+000012 //STDOUT  DD DSN=&SYSUID..P3.OUTPUT(#07),DISP=SHR\
+000013 //STDERR  DD SYSOUT=*\
+000014 //CEEDUMP DD DUMMY\
+000015 // ENDIF\
+****** **************************** Bottom of Data ****************************\
+\
+}
